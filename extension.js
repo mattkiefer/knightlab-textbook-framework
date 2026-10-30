@@ -4,6 +4,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const bookCatalog = require('./bookCatalog');
 const { discoverChapters } = require('./chapterUtils');
+const { isLocalFileModified } = require('./contentUpdate');
 
 const BOOK_RUNTIME_FILE = '.knightlab-textbook.json';
 const UPDATE_BASE_REF = 'refs/textbook/base';
@@ -12,10 +13,16 @@ let currentPanel;
 async function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('knightlab.openTextbook', () => openTextbook(context)),
-    vscode.commands.registerCommand('knightlab.updateTextbook', () => updateTextbook(context))
+    vscode.commands.registerCommand('knightlab.updateTextbook', () => updateTextbook())
   );
 
-  const config = await readBookConfig();
+  let config;
+  try {
+    config = await readBookConfig();
+  } catch (error) {
+    vscode.window.showErrorMessage(`Could not read textbook.json: ${error.message}`);
+    return;
+  }
   if (!config || !vscode.workspace.getConfiguration('knightlab.textbook').get('autoOpen', true)) {
     return;
   }
@@ -39,7 +46,13 @@ function deactivate() {
 }
 
 async function openTextbook(context) {
-  const config = await readBookConfig();
+  let config;
+  try {
+    config = await readBookConfig();
+  } catch (error) {
+    vscode.window.showErrorMessage(`Could not read textbook.json: ${error.message}`);
+    return;
+  }
   if (config) {
     openTextbookPanel(context);
     return;
@@ -227,12 +240,16 @@ function installRuntimeFiles(extensionPath, bookRoot) {
   fs.appendFileSync(excludeFile, `\n/.devcontainer/\n/${BOOK_RUNTIME_FILE}\n`, 'utf8');
 }
 
-async function updateTextbook(context) {
-  if (!(await readBookConfig())) {
-    vscode.window.showWarningMessage('Open a downloaded textbook workspace before updating it.');
-    return;
+async function updateTextbook() {
+  try {
+    if (!(await readBookConfig())) {
+      vscode.window.showWarningMessage('Open a downloaded textbook workspace before updating it.');
+      return;
+    }
+    await updateBookContent();
+  } catch (error) {
+    vscode.window.showErrorMessage(`Could not read textbook.json: ${error.message}`);
   }
-  await updateBookContent();
 }
 
 async function updateBookContent() {
@@ -295,9 +312,9 @@ async function updateBookContent() {
     for (const relativePath of changed) {
       if (deleted.has(relativePath)) continue;
       const absolutePath = resolveBookPath(root, relativePath);
-      const localChanges = runGit(root, ['status', '--porcelain', '--', relativePath]);
       const isLesson = path.basename(relativePath) === 'lesson.html';
       const remoteContent = runGit(root, ['show', `${remote}:${relativePath}`], null);
+      const localChanges = isLocalFileModified(root, base, relativePath, absolutePath);
 
       if (localChanges && !isLesson) {
         const savedPath = findVersionedPath(absolutePath);

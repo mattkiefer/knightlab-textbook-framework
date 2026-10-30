@@ -4,6 +4,8 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "workspaceFolder": "/home/student",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/student,type=bind,consistency=cached",
   "remoteUser": "student",
   "updateRemoteUserUID": true,
   "shutdownAction": "stopContainer",
