@@ -1,0 +1,35 @@
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "student",
+  "updateRemoteUserUID": true,
+  "shutdownAction": "stopContainer",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "REditorSupport.r",
+        "formulahendry.code-runner"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": false,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "code-runner.runInTerminal": true,
+        "code-runner.clearPreviousOutput": true,
+        "code-runner.saveFileBeforeRun": true,
+        "code-runner.executorMap": {
+          "r": "Rscript",
+          "javascript": "node"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "knightlab-textbook-framework",
+  "displayName": "Knight Lab Textbook Framework",
+  "description": "Open and read Knight Lab textbooks in VS Code",
+  "version": "0.1.0",
+  "publisher": "knight-lab",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education"
+  ],
+  "main": "./extension.js",
+  "extensionKind": [
+    "ui"
+  ],
+  "extensionDependencies": [
+    "ms-vscode-remote.remote-containers"
+  ],
+  "activationEvents": [
+    "workspaceContains:textbook.json",
+    "onCommand:knightlab.openTextbook",
+    "onCommand:knightlab.updateTextbook"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "knightlab.openTextbook",
+        "title": "Knight Lab: Open Textbook"
+      },
+      {
+        "command": "knightlab.updateTextbook",
+        "title": "Knight Lab: Update Textbook"
+      }
+    ],
+    "configuration": {
+      "title": "Knight Lab Textbook",
+      "properties": {
+        "knightlab.textbook.autoOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open the table of contents when a textbook workspace opens."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
