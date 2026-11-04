@@ -1,0 +1,6 @@
+.git/**
+.github/**
+install-mac.command
+install-windows.bat
+install-windows.ps1
+test/**

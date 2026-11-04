@@ -12,11 +12,13 @@ To add another book later, add a catalog entry and give the content repository a
 
 ## Student flow
 
-1. Install the Knight Lab Textbook Framework extension and VS Code's Dev Containers extension.
-2. Run **Knight Lab: Open Textbook**.
+1. Run `install-mac.command` on macOS or `install-windows.bat` on Windows. The installer installs prerequisites, packages and installs the framework extension, and starts Docker.
+2. In VS Code, run **Knight Lab: Open Textbook**.
 3. Choose a book and a parent folder for its local checkout.
 4. The extension clones the content repository, adds its reusable Dev Container files locally, and opens it. The table of contents is generated from folders directly inside `chapters/`.
 5. Use **Update Textbook** in the table of contents to fetch updates from that book repository's `main` branch.
+
+The installers download the latest framework source from this repository's `main` branch and package the extension locally. Node.js is used only for that packaging step.
 
 Chapter folders can have optional numeric prefixes, including decimals (for example `1.2-data`). The first `.py`, `.R`, or `.js` file in a chapter folder is opened as its starter file. A `lesson.html` file provides the lesson page.
 

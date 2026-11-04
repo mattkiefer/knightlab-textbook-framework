@@ -4,6 +4,10 @@
   "description": "Open and read Knight Lab textbooks in VS Code",
   "version": "0.1.0",
   "publisher": "knight-lab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattkiefer/knightlab-textbook-framework.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
