@@ -13,7 +13,7 @@ To add another book later, add a catalog entry and give the content repository a
 ## Student flow
 
 1. Run `install-mac.command` on macOS or `install-windows.bat` on Windows. The installer installs prerequisites, packages and installs the framework extension, and starts Docker.
-2. In VS Code, run **Knight Lab: Open Textbook**.
+2. Click the Knight Lab icon in the Activity Bar and select **Open Textbook**, or run **Knight Lab: Open Textbook** from the Command Palette.
 3. Choose a book and a parent folder for its local checkout.
 4. The extension clones the content repository, adds its reusable Dev Container files locally, and opens it. The table of contents is generated from folders directly inside `chapters/`.
 5. Use **Update Textbook** in the table of contents to fetch updates from that book repository's `main` branch.

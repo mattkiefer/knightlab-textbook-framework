@@ -22,21 +22,41 @@
     "ms-vscode-remote.remote-containers"
   ],
   "activationEvents": [
+    "onStartupFinished",
+    "onView:knightlabTextbook.books",
     "workspaceContains:textbook.json",
-    "onCommand:knightlab.openTextbook",
-    "onCommand:knightlab.updateTextbook"
+    "onCommand:knightlabTextbookFramework.openTextbook",
+    "onCommand:knightlabTextbookFramework.updateTextbook"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "knightlab.openTextbook",
+        "command": "knightlabTextbookFramework.openTextbook",
         "title": "Knight Lab: Open Textbook"
       },
       {
-        "command": "knightlab.updateTextbook",
+        "command": "knightlabTextbookFramework.updateTextbook",
         "title": "Knight Lab: Update Textbook"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "knightlabTextbook",
+          "title": "Textbooks",
+          "icon": "resources/icons/wildcat-activity.png"
+        }
+      ]
+    },
+    "views": {
+      "knightlabTextbook": [
+        {
+          "id": "knightlabTextbook.books",
+          "name": "Books",
+          "type": "webview"
+        }
+      ]
+    },
     "configuration": {
       "title": "Knight Lab Textbook",
       "properties": {

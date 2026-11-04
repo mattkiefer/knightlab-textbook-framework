@@ -8,12 +8,40 @@ const { isLocalFileModified } = require('./contentUpdate');
 
 const BOOK_RUNTIME_FILE = '.knightlab-textbook.json';
 const UPDATE_BASE_REF = 'refs/textbook/base';
+const OPEN_TEXTBOOK_COMMAND = 'knightlabTextbookFramework.openTextbook';
+const UPDATE_TEXTBOOK_COMMAND = 'knightlabTextbookFramework.updateTextbook';
 let currentPanel;
 
 async function activate(context) {
+  const openButton = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
+  openButton.text = '$(book) Open Textbook';
+  openButton.tooltip = 'Choose a textbook or open the current textbook';
+  openButton.command = OPEN_TEXTBOOK_COMMAND;
+  openButton.show();
+  context.subscriptions.push(openButton);
+
   context.subscriptions.push(
-    vscode.commands.registerCommand('knightlab.openTextbook', () => openTextbook(context)),
-    vscode.commands.registerCommand('knightlab.updateTextbook', () => updateTextbook())
+    vscode.commands.registerCommand(OPEN_TEXTBOOK_COMMAND, () => openTextbook(context)),
+    vscode.commands.registerCommand(UPDATE_TEXTBOOK_COMMAND, () => updateTextbook())
+  );
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider('knightlabTextbook.books', {
+      resolveWebviewView: (view) => {
+        const knightLabLogoUri = view.webview.asWebviewUri(
+          vscode.Uri.joinPath(context.extensionUri, 'resources', 'icons', 'knightlab-color.png')
+        );
+        view.webview.options = {
+          enableCommandUris: [OPEN_TEXTBOOK_COMMAND],
+          localResourceRoots: [
+            vscode.Uri.joinPath(context.extensionUri, 'resources', 'icons'),
+          ],
+        };
+        view.webview.html = getBooksViewHtml(knightLabLogoUri);
+      },
+    })
   );
 
   let config;
@@ -455,6 +483,53 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;',
   })[character]);
+}
+
+function getBooksViewHtml(knightLabLogoUri) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      padding: 1rem;
+      color: var(--vscode-foreground);
+      font-family: var(--vscode-font-family);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .knightlab-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+    h2 { font-size: 1rem; margin: 0; }
+    p { color: var(--vscode-descriptionForeground); }
+    a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      border-radius: 2px;
+      color: var(--vscode-button-foreground);
+      background: var(--vscode-button-background);
+      text-align: center;
+      text-decoration: none;
+    }
+    a:hover { background: var(--vscode-button-hoverBackground); }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <img class="knightlab-logo" src="${knightLabLogoUri}" alt="Knight Lab red diamond logo">
+    <h2>Knight Lab Textbooks</h2>
+  </div>
+  <p>Choose a textbook to open, or return to your current textbook.</p>
+  <a href="command:${OPEN_TEXTBOOK_COMMAND}">Open or choose a textbook</a>
+</body>
+</html>`;
 }
 
 function getTextbookHtml(chapters, title) {

@@ -1,5 +1,6 @@
 .git/**
 .github/**
+.vscode/**
 install-mac.command
 install-windows.bat
 install-windows.ps1
